@@ -1,0 +1,104 @@
+<meta charset="utf-8">
+<script type="text/javascript">
+	
+	function getRandomInt(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	function getCard() {
+		var cards = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+		return cards[getRandomInt(0, cards.length - 1)];
+	}
+
+	function countPoints(arr) {
+		var sum = 0;
+		var i;
+		for (i = 0; i < arr.length; i++) {
+    		if (arr[i] != 'A') {
+    			if ((arr[i] == 'J') || (arr[i] == 'Q') || (arr[i] == 'K')) {
+    				sum = sum + 10;
+    			}
+				else {
+					sum = sum + parseInt(arr[i]);
+				}
+			}
+    	}
+    	for (i = 0; i < arr.length; i++) {
+    		if (arr[i] == 'A') {
+    			if (sum > 10) {
+    				sum = sum + 1;
+    			}
+    			else {
+    				sum = sum + 11;
+    			}
+			}
+    	}
+		return sum;
+	}
+
+	function getStatus(status) {
+		var points = "Очки дилера = " + dealerSum + "; Очки игрока = " + playerSum + ". \n";
+		var cards = "Дилер: " + dealer.join(' ') + "; Игрок: " + player.join(' ') + ". \n";
+		var result = '';
+		if (status == 'cards') {
+			result = result + cards;
+		}
+		else if (status == 'points') {
+			result = result + points;;
+		}
+		else {
+			result = cards + points;
+		}
+		return result;
+	}
+
+	var dealer = [getCard()];
+	var player = [getCard(), getCard()];
+	var game = false;
+	var dealerSum = countPoints(dealer);
+	var playerSum = countPoints(player);
+	
+	if (playerSum == 21) {
+		alert("Поздравляем! Вы победили!\n" + getStatus());
+	}
+	else {
+		do {
+			alert(getStatus());
+			var game = confirm("Еще одну карту?");
+			if (game == true) {
+				player.push(getCard());
+				playerSum = countPoints(player);
+				if (playerSum > 21) {
+					alert("Перебор! Вы проиграли!\n" + getStatus());
+					break;
+				}
+				else if (playerSum == 21) {
+					alert("Поздравляем! Вы победили!\n" + getStatus());
+					break;
+				}
+			}
+			else {
+				while (dealerSum < 17) {
+					dealer.push(getCard());
+					dealerSum = countPoints(dealer);
+				}
+				if ((dealerSum > playerSum) && (dealerSum <= 21)) {
+					alert("Увы... Вы проиграли!\n" + getStatus());
+					break;
+				}
+				else if (dealerSum < playerSum) {
+					alert("Поздравляем! Вы победили!\n" + getStatus());
+					break;
+				}
+				else if (dealerSum > 21) {
+					alert("Поздравляем! Вы победили!\n" + "У дилера перебор!\n" + getStatus());
+					break;
+				}
+				else {
+					alert("Равное количесто очков!\n");
+					break;
+				}
+			}
+		} while (game)
+	}
+</script>
